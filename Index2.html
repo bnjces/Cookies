@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cookies</title>
+    </head>
+    <body onload="setForm()">
+        Name: <input id="name" type="text" /><br />
+        Gender: 
+        <input type="radio" name="gender" value="male"> Male 
+        <input type="radio" name="gender" value="female"> Female
+        <input type="radio" name="gender" value="other"> Other<br />
+        <input type="checkbox" name="vehicle" value="Bike"> I have a bike<br>
+        <input type="checkbox" name="vehicle" value="Car"> I have a car<br>
+        <input type="checkbox" name="vehicle" value="Airplane"> I have a airplane<br>
+        <button onclick="saveCookies()">Save Form</button>
+        <script>
+
+        function setCookie(cname, cvalue, exdays)
+        {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function deleteCookie(cname, cvalue) 
+        {
+            var d = new Date();
+            d.setTime(d.getTime() -1 );
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) 
+        {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i = 0; i < ca.length; i++) 
+            {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') 
+                {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) 
+                {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function saveCookies()
+        {
+            var name = document.getElementById("name");
+            var nameval = null;
+            if(name != null)
+            {
+                nameval = name.value;
+            }
+            console.log(nameval);
+            console.log(nameval.value);
+            setCookie("name", nameval, 365);
+            var radios = document.getElementsByName("gender");
+            for (var i = 0; i < radios.length; i++)
+            {
+                 if (radios[i].checked)
+                 {
+                     console.log(radios[i].value)
+                     setCookie(radios[i].value, "checked", 365);
+
+                     // only one radio can be logically checked, don't check the rest
+                     break;
+                 }
+            }
+
+            var checkboxs = document.getElementsByName('vehicle')
+            var value = "";
+            for(var i = 0; i < checkboxs.length; i++)
+            {
+                 if(checkboxs[i].checked)
+                 {
+                     if(value.length > 1)
+                     {
+                         value += ",";
+                     }
+                     value += checkboxs[i].value;
+                 }
+             }
+             setCookie("vehicle", value, 365);
+        }
+
+        function setForm() 
+        {
+            var ca = document.cookie.split(';');
+            for(var i = 0; i < ca.length; i++) 
+            {
+                var c = ca[i];
+                console.log(c);
+            }
+            var name = getCookie("name");
+            var checkboxs = getCookie("checkboxs")
+            document.getElementById("name").value = name;
+            var radios = document.getElementsByName("gender");
+            for(var i = 0; i < radios.length; i++)
+            {
+                var value = radios[i].value;
+                console.log(value)
+                console.log(getCookie(value));
+                if(getCookie(value) == "checked")
+                {
+                    radios[i].checked = true;
+                    console.log(radios[i].checked);
+                    break;
+                } 
+            }
+            if(checkboxs != null && checkboxs != "")
+            {
+                var vehicles = document.getElementsByName('vehicle')
+                console.log(checkboxs);
+                for(var i = 0; i < vehicles.length; i++)
+                {
+                    console.log(vehicles[i].value);
+                    console.log(checkboxs.indexOf(vehicles[i].value));
+                    if(checkboxs.indexOf(vehicles[i].value) > -1)
+                    {
+                        vehicles[i].checked = true;
+                    }
+                }
+            }
+        } 
+        </script>
+    </body>
+</html>
